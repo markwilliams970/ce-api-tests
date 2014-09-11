@@ -25,11 +25,11 @@ end
 describe "Marketing Hub Salesforce Contact CRUD Tests" do
 
   before :all do
-	@my_http_client                                = HTTPClient.new
-	@my_http_client.protocol_retry_count           = 2
-	@my_http_client.connect_timeout                = 300
-	@my_http_client.receive_timeout                = 300
-	@my_http_client.send_timeout                   = 300
+	@ce_http_client                                = HTTPClient.new
+	@ce_http_client.protocol_retry_count           = 2
+	@ce_http_client.connect_timeout                = 300
+	@ce_http_client.receive_timeout                = 300
+	@ce_http_client.send_timeout                   = 300
 	
 	# Elements Server
 	@base_url                                      = "https://api.cloud-elements.com"
@@ -48,7 +48,7 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
   it "should create a contact" do
   	
 	contact_request      = make_post_req("contactsfdcmar.json", "marketing", "contacts", "v2")
-	response             = @my_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
+	response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
 	response_http_status = response.status_code
   	expect(response_http_status).to eq(200)
   end

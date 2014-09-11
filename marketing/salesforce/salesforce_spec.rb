@@ -9,6 +9,19 @@ def make_req_url(hub, endpoint, version)
 	return "#{@base_url}/elements/api-#{version}/hubs/#{hub}/#{endpoint}"
 end
 
+def make_post_req(json_file_name, hub, endpoint, version)
+
+	json_file                                   = File.dirname(__FILE__) + "/json/#{json_file_name}"
+	json_string                                 = File.read(json_file)
+
+	post_req = {
+		:method => :post,
+		:url => make_req_url(hub, endpoint, version),
+		:args => {:header => @req_headers, :body => json_string}
+	}
+	return post_req
+end
+
 describe "Marketing Hub Salesforce Contact CRUD Tests" do
 
   before :all do
@@ -33,20 +46,9 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
   end
 
   it "should create a contact" do
-
-  	# JSON data
-	contact_file                                   = File.dirname(__FILE__) + "/json/contactsfdcmar.json"
-	@contact_json                                  = File.read(contact_file)
-  	contact_url = make_req_url("marketing", "contacts", "v2")
   	
-  	req_method = :post
-
-	req_args = {
-		:header => @req_headers,
-		:body   => @contact_json
-	}
-
-	response = @my_http_client.request(req_method, contact_url, req_args)
+	contact_request      = make_post_req("contactsfdcmar.json", "marketing", "contacts", "v2")
+	response             = @my_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
 	response_http_status = response.status_code
   	expect(response_http_status).to eq(200)
   end

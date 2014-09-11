@@ -30,13 +30,13 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
 	@req_headers["Authorization"]                  = @authentication_key
 	@req_headers["Content-Type"]                   = "application/json"
 	
-	# JSON data
-	contact_file                                   = File.dirname(__FILE__) + "/json/contactsfdcmar.json"
-	@contact_json                                  = File.read(contact_file)
   end
 
   it "should create a contact" do
-  	
+
+  	# JSON data
+	contact_file                                   = File.dirname(__FILE__) + "/json/contactsfdcmar.json"
+	@contact_json                                  = File.read(contact_file)
   	contact_url = make_req_url("marketing", "contacts", "v2")
   	
   	req_method = :post

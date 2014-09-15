@@ -19,7 +19,7 @@ def make_req(req_type, hub, endpoint, version, json_file_name, id = nil)
       json_file                = File.dirname(__FILE__) + "/json/#{json_file_name}"
       json_string              = File.read(json_file)
       args                     = {:header => @req_headers, :body => json_string}
-   elsif req_type == :get then
+   elsif req_type == :get || :delete then
       args                     = {:header => @req_headers}
    end
 
@@ -78,6 +78,24 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
   
   it "should update a contact" do
    contact_request      = make_req(:patch, "marketing", "contacts", "v2", "patchcontactsfdcmar.json", $contact_id)
+   response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
+   response_http_status = response.status_code
+   response_body = response.body
+   puts response.inspect
+   expect(response_http_status).to eq(200)
+  end
+  
+   it "should find a contact by ID" do
+   contact_request      = make_req(:get, "marketing", "contacts", "v2", "nojsonneeded.json", $contact_id)
+   response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
+   response_http_status = response.status_code
+   response_body = response.body
+   puts response.inspect
+   expect(response_http_status).to eq(200)
+  end
+  
+   it "should delete a contact by ID" do
+   contact_request      = make_req(:delete, "marketing", "contacts", "v2", "nojsonneeded.json", $contact_id)
    response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
    response_http_status = response.status_code
    response_body = response.body

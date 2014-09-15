@@ -60,6 +60,7 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
    contact_request      = make_req(:post, "marketing", "contacts", "v2", "contactsfdcmar.json")
    response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
    response_http_status = response.status_code
+   puts response.inspect
    expect(response_http_status).to eq(200)
   end
 

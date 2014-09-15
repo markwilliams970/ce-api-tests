@@ -5,13 +5,17 @@ require 'json'
 
 require File.dirname(__FILE__) + "/auth_keys.rb"
 
-def make_req_url(hub, endpoint, version)
-   return "#{@base_url}/elements/api-#{version}/hubs/#{hub}/#{endpoint}"
+def make_req_url(hub, endpoint, version, id = nil)
+   if !id.nil? then
+      return "#{@base_url}/elements/api-#{version}/hubs/#{hub}/#{endpoint}/#{id}"
+   else
+      return "#{@base_url}/elements/api-#{version}/hubs/#{hub}/#{endpoint}"
+   end
 end
 
-def make_req(req_type, hub, endpoint, version, json_file_name)
+def make_req(req_type, hub, endpoint, version, json_file_name, id = nil)
 
-   if req_type == :post then
+   if req_type == :post || req_type == :patch then
       json_file                = File.dirname(__FILE__) + "/json/#{json_file_name}"
       json_string              = File.read(json_file)
       args                     = {:header => @req_headers, :body => json_string}
@@ -19,7 +23,12 @@ def make_req(req_type, hub, endpoint, version, json_file_name)
       args                     = {:header => @req_headers}
    end
 
-   req_url = make_req_url(hub, endpoint, version)
+   if req_type == :post then 
+   	  req_url = make_req_url(hub, endpoint, version)
+   else
+      puts "Contact ID: in make_req: #{id}"
+      req_url = make_req_url(hub, endpoint, version, id)
+   end
 
    req = {
       :method => req_type,
@@ -28,7 +37,7 @@ def make_req(req_type, hub, endpoint, version, json_file_name)
    }
 
    puts "Testing #{req_type} against #{req_url}..."
-   if req_type == :post then puts "Body: #{json_string}" end
+   if req_type == :post || req_type == :patch then puts "Body: #{json_string}" end
    return req
 end
 
@@ -56,10 +65,22 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
   end
 
   it "should create a contact" do
-   
+
+   null_id              = nil
    contact_request      = make_req(:post, "marketing", "contacts", "v2", "contactsfdcmar.json")
    response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
    response_http_status = response.status_code
+   response_body_json = JSON.parse(response.body)
+   $contact_id = response_body_json["id"]
+   puts response.inspect
+   expect(response_http_status).to eq(200)
+  end
+  
+  it "should update a contact" do
+   contact_request      = make_req(:patch, "marketing", "contacts", "v2", "patchcontactsfdcmar.json", $contact_id)
+   response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
+   response_http_status = response.status_code
+   response_body = response.body
    puts response.inspect
    expect(response_http_status).to eq(200)
   end

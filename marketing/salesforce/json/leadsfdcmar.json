@@ -1,0 +1,19 @@
+{
+  "firstName": "Kenny",
+  "lastName": "McCormick",
+  "phone": "555-555-5555",
+  "leadAddress": {
+    "street1": "123",
+    "street2": "Main",
+    "city": "South Park",
+    "stateOrProvince": "CO",
+    "postalCode": "80654",
+    "countyOrDistrict": "Summit",
+    "country": "US"
+  },
+  "title": "Director",
+  "description": "Director of Technology",
+  "status": "Active",
+  "company": "Sweet Cows",
+  "email": "kenny@southpark.com"
+}

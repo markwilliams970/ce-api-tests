@@ -48,7 +48,6 @@ class SpecHelperSFDC
         if req_type == :post then 
             req_url = make_req_url(hub, endpoint, version)
         else
-            puts "Contact ID: in make_req: #{id}"
             req_url = make_req_url(hub, endpoint, version, id)
         end
 
@@ -61,6 +60,13 @@ class SpecHelperSFDC
         puts "Testing #{req_type} against #{req_url}..."
         if req_type == :post || req_type == :patch then puts "Body: #{json_string}" end
         return req
+    end
+    
+    def write_json(source_json_filename, json_object)
+        target_file_name = source_json_filename.split(".")[0] + "_response.json"
+        output_json_file = File.dirname(__FILE__) + "/json/#{target_file_name}"
+        pretty_json = JSON.pretty_generate(json_object)
+        File.open(output_json_file, 'w') { |file| file.write(pretty_json) }
     end
 
 end

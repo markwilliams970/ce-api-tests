@@ -1,2 +1,3 @@
 .DS_Store
 auth_keys.rb
+*_response.json

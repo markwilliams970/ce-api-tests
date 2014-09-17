@@ -94,7 +94,7 @@ describe "Marketing Hub Salesforce Contact CRUD Tests" do
         response_body = response.body
         response_json = JSON.parse(response_body)
         
-         # Output response
+        # Output response
         puts "Response:"
         puts JSON.pretty_generate(response_json)
         @sfdc_spec_helper.write_json(source_json_file, response_json)

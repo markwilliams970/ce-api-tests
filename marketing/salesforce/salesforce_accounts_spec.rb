@@ -19,41 +19,106 @@ describe "Marketing Hub Salesforce Account CRUD Tests" do
     end
 
   it "should create a account" do
-
+  
+        # We're doing a create, so have no ID to pass into request yet
+        # but we require an object to pass into our function prototype
         null_id              = nil
-        contact_request      = @sfdc_spec_helper.make_req(:post, "marketing", "accounts", "v2", "accountsfdcmar.json")
+        
+        # File containing body of JSON to POST
+        source_json_file     = "accountsfdcmar.json"
+        
+        # Create a request object/hash that we can use to call cloud-elements server
+        contact_request      = @sfdc_spec_helper.make_req(:post, "marketing", "accounts", "v2", source_json_file)
+        
+        # Make request against cloud-elements server and get response status code
         response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
         response_http_status = response.status_code
-        response_body_json = JSON.parse(response.body)
-        $contact_id = response_body_json["id"]
-        puts response.inspect
+        
+        # Get response body and JSON-ify it
+        response_body = response.body
+        response_json = JSON.parse(response_body)
+        
+        # We'll need the ID of the account created, for later on
+        $account_id = response_json["id"]
+        
+        # Output response
+        puts "Response:"
+        puts JSON.pretty_generate(response_json)
+        @sfdc_spec_helper.write_json(source_json_file, response_json)
+        
+        # Evaluate test condition
         expect(response_http_status).to eq(200)
     end
   
-    it "should update a account" do
-        contact_request      = @sfdc_spec_helper.make_req(:patch, "marketing", "accounts", "v2", "patchaccountsfdcmar.json", $contact_id)
+    it "should update an account" do
+    
+        # File containing body of JSON to PATCH
+        source_json_file     = "patchaccountsfdcmar.json"
+        
+        # Create a request object/hash that we can use to call cloud-elements server
+        contact_request      = @sfdc_spec_helper.make_req(:patch, "marketing", "accounts", "v2", source_json_file, $account_id)
+        
+        # Make request against cloud-elements server and get response status code
         response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
         response_http_status = response.status_code
+        
+        # Get response body and JSON-ify it
         response_body = response.body
-        puts response.inspect
+        response_json = JSON.parse(response_body)
+        
+        # Output response
+        puts "Response:"
+        puts JSON.pretty_generate(response_json)
+        @sfdc_spec_helper.write_json(source_json_file, response_json)
+        
+        # Evaluate test condition
         expect(response_http_status).to eq(200)
     end
   
     it "should find a account by ID" do
-        contact_request      = @sfdc_spec_helper.make_req(:get, "marketing", "accounts", "v2", "nojsonneeded.json", $contact_id)
+    
+        # Dummy file name to pass our function prototype for parameter-matching
+        # Obviously our GET request doesn't need to pass in json
+        # However, we're going to follow a functional naming scheme so that our
+        # response output filename makes sense
+        source_json_file     = "findanaccountsfdc.json"
+    
+    	# Create a request object/hash that we can use to call cloud-elements server
+        contact_request      = @sfdc_spec_helper.make_req(:get, "marketing", "accounts", "v2", source_json_file, $account_id)
+        
+        # Make request against cloud-elements server and get response status code
         response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
         response_http_status = response.status_code
+        
+        # Get response body and JSON-ify it
         response_body = response.body
-        puts response.inspect
+        response_json = JSON.parse(response_body)
+        
+        # Output response
+        puts "Response:"
+        puts JSON.pretty_generate(response_json)
+        @sfdc_spec_helper.write_json(source_json_file, response_json)
+        
+        # Evaluate test condition
         expect(response_http_status).to eq(200)
     end
   
     it "should delete a account by ID" do
-        contact_request      = @sfdc_spec_helper.make_req(:delete, "marketing", "accounts", "v2", "nojsonneeded.json", $contact_id)
+    
+        # Dummy file name to pass our function prototype for parameter-matching
+        # Obviously our GET request doesn't need to pass in json
+        # However, we're going to follow a functional naming scheme so that our
+        # response output filename makes sense
+        source_json_file     = "deleteanaccountsfdc.json"
+        
+        # Create a request object/hash that we can use to call cloud-elements server
+        contact_request      = @sfdc_spec_helper.make_req(:delete, "marketing", "accounts", "v2", source_json_file, $account_id)
+        
+        # Make request against cloud-elements server and get response status code
         response             = @ce_http_client.request(contact_request[:method], contact_request[:url], contact_request[:args])
         response_http_status = response.status_code
-        response_body = response.body
-        puts response.inspect
+        
+        # Evaluate test condition
         expect(response_http_status).to eq(200)
     end
 
